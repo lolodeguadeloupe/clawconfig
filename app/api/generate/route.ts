@@ -45,8 +45,9 @@ Support: https://openclaw.ai
 `)
 
     const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' })
+    const uint8 = new Uint8Array(zipBuffer)
 
-    return new NextResponse(zipBuffer, {
+    return new NextResponse(uint8, {
       status: 200,
       headers: {
         'Content-Type': 'application/zip',
