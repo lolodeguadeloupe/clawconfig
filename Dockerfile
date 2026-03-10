@@ -8,8 +8,13 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+
+# Installer Claude Code CLI
+RUN npm install -g @anthropic-ai/claude-code
+
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 RUN mkdir -p ./public
+
 EXPOSE 3000
 CMD ["node", "server.js"]
