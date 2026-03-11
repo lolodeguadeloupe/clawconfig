@@ -106,6 +106,60 @@ export default function ClawConfig() {
               <p className="text-white/50">On génère votre configuration personnalisée prête à l'emploi</p>
             </div>
 
+            {/* ─── Comment ça marche ─────────────────────────────────── */}
+            <div className="mb-12">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                {[
+                  { step: '1', icon: '🎯', title: langue === 'fr' ? 'Choisissez votre métier' : 'Pick your role', desc: langue === 'fr' ? 'Développeur, commercial, e-commerce…' : 'Developer, sales, e-commerce…' },
+                  { step: '2', icon: '💬', title: langue === 'fr' ? 'Répondez à 5 questions' : 'Answer 5 questions', desc: langue === 'fr' ? 'Style, outils, secteur, équipe…' : 'Style, tools, sector, team…' },
+                  { step: '3', icon: '📦', title: langue === 'fr' ? 'Téléchargez votre ZIP' : 'Download your ZIP', desc: langue === 'fr' ? '6 fichiers .md prêts à installer' : '6 ready-to-install .md files' },
+                ].map(({ step, icon, title, desc }) => (
+                  <div key={step} className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
+                    <div className="text-3xl mb-2">{icon}</div>
+                    <div className="text-xs font-bold text-blue-400 mb-1">{langue === 'fr' ? `ÉTAPE ${step}` : `STEP ${step}`}</div>
+                    <div className="font-semibold text-sm mb-1">{title}</div>
+                    <div className="text-white/40 text-xs">{desc}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Installation rapide */}
+              <div className="bg-black/30 border border-white/10 rounded-2xl p-6">
+                <h3 className="font-bold text-sm text-white/70 mb-4 flex items-center gap-2">
+                  <span className="text-lg">⚡</span>
+                  {langue === 'fr' ? 'Installation en 3 commandes' : 'Install in 3 commands'}
+                </h3>
+                <div className="space-y-2 font-mono text-sm">
+                  <div className="flex items-start gap-3">
+                    <span className="text-white/30 select-none">$</span>
+                    <div>
+                      <span className="text-green-400">cd</span>
+                      <span className="text-white/70"> ~/.openclaw/workspace/</span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-white/30 select-none">$</span>
+                    <div>
+                      <span className="text-yellow-400">unzip</span>
+                      <span className="text-white/70"> openclaw-config.zip</span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-white/30 select-none">$</span>
+                    <div>
+                      <span className="text-blue-400">cp</span>
+                      <span className="text-white/70"> openclaw-config/*.md .</span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-white/30 text-xs mt-4 border-t border-white/10 pt-4">
+                  {langue === 'fr'
+                    ? '✅ Redémarrez OpenClaw — votre IA est configurée pour votre métier'
+                    : '✅ Restart OpenClaw — your AI is configured for your role'}
+                </p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {METIERS.map(m => (
                 <button key={m.id} onClick={() => { setSelectedMetier(m.id); setStep('questions'); setCurrentQ(0) }}
@@ -279,14 +333,46 @@ export default function ClawConfig() {
               Télécharger ma configuration (.zip)
             </a>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-left mb-6">
-              <h4 className="font-semibold mb-3 text-sm">📋 Installation rapide :</h4>
-              <div className="space-y-2 text-xs text-white/50 font-mono">
-                <p>1. Décompressez le ZIP</p>
-                <p>2. Copiez les .md dans votre workspace :</p>
-                <p className="bg-black/30 px-3 py-2 rounded-lg text-white/70">cp *.md ~/.openclaw/workspace/</p>
-                <p>3. Redémarrez OpenClaw</p>
-                <p>4. ✅ Votre IA est configurée pour {metier?.nom}</p>
+            <div className="bg-black/30 border border-white/10 rounded-2xl p-6 text-left mb-6">
+              <h4 className="font-semibold mb-4 text-sm flex items-center gap-2">
+                <span>📋</span> {langue === 'fr' ? 'Comment installer votre configuration' : 'How to install your config'}
+              </h4>
+              <div className="space-y-4">
+                {[
+                  {
+                    n: '1',
+                    title: langue === 'fr' ? 'Décompressez le ZIP' : 'Unzip the archive',
+                    code: 'unzip openclaw-config.zip',
+                    desc: langue === 'fr' ? '6 fichiers .md dans un dossier openclaw-config/' : '6 .md files in openclaw-config/ folder',
+                  },
+                  {
+                    n: '2',
+                    title: langue === 'fr' ? 'Copiez dans votre workspace' : 'Copy to your workspace',
+                    code: 'cp openclaw-config/*.md ~/.openclaw/workspace/',
+                    desc: langue === 'fr' ? 'Remplace les fichiers existants (ou crée-les)' : 'Replaces existing files (or creates them)',
+                  },
+                  {
+                    n: '3',
+                    title: langue === 'fr' ? 'Redémarrez OpenClaw' : 'Restart OpenClaw',
+                    code: 'openclaw gateway restart',
+                    desc: langue === 'fr' ? 'Votre IA relit les fichiers au démarrage' : 'Your AI re-reads the files on startup',
+                  },
+                  {
+                    n: '4',
+                    title: langue === 'fr' ? 'Testez votre IA' : 'Test your AI',
+                    code: langue === 'fr' ? '"Présente-toi"' : '"Introduce yourself"',
+                    desc: langue === 'fr' ? `Votre assistant est maintenant configuré pour : ${metier?.nom}` : `Your assistant is now configured for: ${metier?.nom}`,
+                  },
+                ].map(({ n, title, code, desc }) => (
+                  <div key={n} className="flex gap-4">
+                    <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{n}</div>
+                    <div>
+                      <div className="font-medium text-sm mb-1">{title}</div>
+                      <div className="bg-black/40 rounded-lg px-3 py-1.5 font-mono text-xs text-green-400 mb-1 inline-block">{code}</div>
+                      <div className="text-white/40 text-xs">{desc}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
