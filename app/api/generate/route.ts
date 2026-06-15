@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { generateConfig } from '@/lib/generator'
 import { METIERS } from '@/lib/metiers'
+import { rateLimit, clientIp } from '@/lib/rate-limit'
 import JSZip from 'jszip'
+
+const RATE_LIMIT = 5
+const RATE_WINDOW_MS = 60_000
 
 const ALLOWED_METIERS = METIERS.map((m) => m.nom) as [string, ...string[]]
 
@@ -19,6 +23,23 @@ const BodySchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  const ip = clientIp(request.headers)
+  const limit = rateLimit(ip, RATE_LIMIT, RATE_WINDOW_MS)
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Retry later.' },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': String(limit.retryAfterSec),
+          'X-RateLimit-Limit': String(RATE_LIMIT),
+          'X-RateLimit-Remaining': '0',
+          'X-RateLimit-Reset': String(Math.floor(limit.resetAt / 1000)),
+        },
+      },
+    )
+  }
+
   let body: unknown
   try {
     body = await request.json()
