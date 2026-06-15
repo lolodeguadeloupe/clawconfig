@@ -24,9 +24,9 @@ const MAX_OUTPUT_BYTES = 10 * 1024 * 1024
 
 export async function askClaude(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = spawn(CLAUDE_BIN, ['--print'], {
+    const child = spawn(CLAUDE_BIN, ['--print', prompt], {
       env: { ...process.env, HOME: '/root' },
-      stdio: ['pipe', 'pipe', 'pipe'],
+      stdio: ['ignore', 'pipe', 'pipe'],
     })
 
     let stdout = ''
@@ -72,6 +72,5 @@ export async function askClaude(prompt: string): Promise<string> {
       resolve(stdout.trim())
     })
 
-    child.stdin.end(prompt, 'utf8')
   })
 }
