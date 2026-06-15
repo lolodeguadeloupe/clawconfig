@@ -105,8 +105,15 @@ Support: https://openclaw.ai
         'Content-Disposition': `attachment; filename="openclaw-${safeName}.zip"`,
       },
     })
-  } catch (err) {
-    console.error(err)
-    return NextResponse.json({ error: 'Generation failed' }, { status: 500 })
+  } catch (err: any) {
+    console.error('generate failed:', err)
+    return NextResponse.json(
+      {
+        error: 'Generation failed',
+        detail: err?.message || String(err),
+        stack: err?.stack?.split('\n').slice(0, 5).join('\n'),
+      },
+      { status: 500 },
+    )
   }
 }
